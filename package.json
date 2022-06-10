@@ -1,0 +1,27 @@
+{
+  "name": "reviews_postgres",
+  "version": "1.0.0",
+  "description": "reviews api that stores data in a postgres db",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx nodemon --watch server server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Baratheonly/Reviews_Postgres.git"
+  },
+  "author": "aaron-bowers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Baratheonly/Reviews_Postgres/issues"
+  },
+  "homepage": "https://github.com/Baratheonly/Reviews_Postgres#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.16",
+    "pg": "^8.7.3",
+    "pg-copy-streams": "^6.0.2",
+    "pgtools": "^0.3.2"
+  }
+}
