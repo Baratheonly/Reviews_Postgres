@@ -1,7 +1,7 @@
-const { Client } = require('pg');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const client = new Client({
+const pool = new Pool({
   host: 'localhost',
   user: 'postgres',
   port: process.env.DBPORT,
@@ -9,18 +9,6 @@ const client = new Client({
   password: process.env.DBPASSWORD
 })
 
-client.connect()
-  .then(() => console.log("Connected to Postgres"))
-  .then(() => {
-    let limit100 = `
-      Select * from review_photos
-      ORDER BY id DESC LIMIT 50
-    `;
+pool.connect()
 
-    return client.query(limit100)
-  })
-  .then(results => {
-    console.table(results.rows);
-  })
-  .catch(e => console.log(e))
-  .finally(() => client.end())
+module.exports = pool;
