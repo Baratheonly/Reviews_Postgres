@@ -1,54 +1,56 @@
 -- POPULATED DATA INTO POSTGRESQL USING pgAdmin. These were the queries written in the process
 -------------------------------------------------------------------------
--- DROP DATABASE sdc;
+DROP DATABASE IF EXISTS sdc;
 CREATE DATABASE sdc;
 
 \c sdc;
 
 -- Table: public.reviews
--- DROP TABLE IF EXISTS public.reviews;
-
-CREATE TABLE IF NOT EXISTS public.reviews
-(
-    id integer NOT NULL DEFAULT nextval('reviews_id_seq'::regclass),
+DROP TABLE IF EXISTS reviews;
+CREATE TABLE IF NOT EXISTS reviews(
+    review_id serial PRIMARY KEY,
     product_id integer NOT NULL,
     rating integer NOT NULL,
-    summary character varying(200) COLLATE pg_catalog."default" NOT NULL,
-    body character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    summary text NOT NULL,
+    body text NOT NULL,
     recommend boolean NOT NULL DEFAULT false,
     reported boolean NOT NULL DEFAULT false,
-    reviewer_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    reviewer_email character varying(100) COLLATE pg_catalog."default" NOT NULL,
-    response character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    reviewer_name text NOT NULL,
+    reviewer_email text NOT NULL,
+    response text COLLATE pg_catalog."default",
     helpfulness integer NOT NULL DEFAULT 0,
-    date bigint NOT NULL,
-    CONSTRAINT reviews_pkey PRIMARY KEY (id)
+    date bigint NOT NULL
+);
+
+DROP TABLE IF EXISTS review_photos CASCADE;
+CREATE TABLE IF NOT EXISTS characteristics(
+    id integer NOT NULL DEFAULT nextval('characteristics_id_seq'::regclass),
+    product_id integer NOT NULL,
+    name text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT characteristics_pkey PRIMARY KEY (id)
 )
 
-TABLESPACE pg_default;
+DROP TABLE IF EXISTS review_photos CASCADE;
+CREATE TABLE IF NOT EXISTS review_photos(
+    id integer NOT NULL DEFAULT nextval('review_photos_id_seq'::regclass),
+    review_id integer NOT NULL REFERENCES reviews (review_id),
+    url character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT review_photos_pkey PRIMARY KEY (id)
+);
 
-ALTER TABLE IF EXISTS public.reviews
-    OWNER to aaronbowers;
+
+COPY reviews (review_id, product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
+FROM '/Users/aaronbowers/Desktop/hackreactor/CSV/reviews.csv'
+DELIMITER ','
+CSV HEADER;
+
+COPY review_photos (review_id, url)
+FROM '/Users/aaronbowers/Desktop/hackreactor/CSV/reviews_photos.csv'
+DELIMITER ','
+CSV HEADER;
 
 -- TRANSFORM THE DATE DATA INTO TIMESTAMP
 ALTER TABLE reviews
 ALTER COLUMN date
 TYPE timestamp with time zone
-USING to_timestamp(date::decimal / 1000)
-
--- Table: public.review_photos
--- DROP TABLE IF EXISTS public.review_photos;
-
-CREATE TABLE IF NOT EXISTS public.review_photos
-(
-    id integer NOT NULL DEFAULT nextval('review_photos_id_seq'::regclass),
-    review_id integer NOT NULL,
-    url character varying(256) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT review_photos_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.review_photos
-    OWNER to aaronbowers;
-
+USING to_timestamp(date / 1000);
