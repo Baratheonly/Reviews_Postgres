@@ -43,7 +43,7 @@ module.exports = {
         res.status(200).send(reviews);
       })
       .catch(err => {
-        console.error(err);
+        // console.error(err);
         res.status(400).send(err);
       })
   },
@@ -51,16 +51,34 @@ module.exports = {
   getMeta: (req, res) => {
     console.log(req.query);
   },
+
   addReview: (req, res) => {
     console.log(req.body);
   },
 
   addHelpful: (req, res) => {
-    console.log(req.body);
+    // console.log(req.params.review_id);
+    let query = `
+      UPDATE reviews
+      SET helpfulness = helpfulness+1
+      WHERE review_id = $1
+    `
+
+    pool.query(query, [req.params.review_id])
+      .then(data => res.status(200).send(`review marked as helpful`))
+      .catch(err => console.error('helpfulness error:', err));
   },
 
   addReport: (req, res) => {
-    console.log(req.body);
+    let query = `
+      UPDATE reviews
+      SET reported = NOT reported
+      WHERE review_id = $1
+    `
+
+    pool.query(query, [req.params.review_id])
+      .then(data => res.status(200).send('review has been flagged as "reported"'))
+      .catch(err => console.error('report error:', err));
   }
 
 }
