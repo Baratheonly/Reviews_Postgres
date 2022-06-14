@@ -83,12 +83,10 @@ module.exports = {
           SELECT $1, UNNEST($2::text[])
           RETURNING *
         ;`
-        pool.query(photosQuery, [review_id, photos])
-          .then(data => console.log(data.rows[0]))
-          .catch(err => console.error('error adding photos -->', err))
+        return pool.query(photosQuery, [review_id, photos])
       })
-      .catch(err => console.error('couldn\'t add photos -->', err));
-
+      .then(data => console.log(data.rows[0]))
+      .catch(err => console.error('error adding photos -->', err))
   },
 
   addHelpful: (req, res) => {
