@@ -51,8 +51,54 @@ module.exports = {
       })
   },
 
+  // {
+  //   "product_id": "40344",
+  //   "ratings": {
+  //       "1": "69",
+  //       "2": "68",
+  //       "3": "160",
+  //       "4": "150",
+  //       "5": "338"
+  //   },
+  //   "recommended": {
+  //       "false": "170",
+  //       "true": "615"
+  //   },
+  //   "characteristics": {
+  //       "Fit": {
+  //           "id": 135219,
+  //           "value": "3.2447698744769874"
+  //       },
+  //       "Length": {
+  //           "id": 135220,
+  //           "value": "3.4004237288135593"
+  //       },
+  //       "Comfort": {
+  //           "id": 135221,
+  //           "value": "3.2488038277511962"
+  //       },
+  //       "Quality": {
+  //           "id": 135222,
+  //           "value": "3.2710706150341686"
+  //       }
+  //   }
+  // }
+
   getMeta: (req, res) => {
     console.log(req.query);
+    let {product_id} = req.query;
+
+    let queryMeta = `
+      SELECT
+        $1 AS product_id,
+        () AS rating,
+        (SELECT
+          json_object_agg (
+            'false',
+          )
+        ) AS recommended,
+        () AS characteristics
+    `
   },
 
   addReview: (req, res) => {
@@ -60,6 +106,7 @@ module.exports = {
     let timeAdded = new Date().toISOString();
     let body = Object.values(req.body);
     let {photos} = req.body;
+    let review_id;
 
     let query = `
       INSERT INTO reviews (
@@ -72,12 +119,8 @@ module.exports = {
     ;`
     pool.query(query, [...body.slice(0, body.length - 1), timeAdded])
       .then(data => {
-        res.status(200).send(`review added`)
-        return data.rows[0].review_id;
-      })
-      .then(review_id => {
-        console.log('hey, look at this review_id:', review_id);
-
+        // console.log('hey, look at this review_id:', rev_id);
+        review_id = data.rows[0].review_id;;
         let photosQuery = `
           INSERT INTO photos(review_id, url)
           SELECT $1, UNNEST($2::text[])
@@ -85,7 +128,10 @@ module.exports = {
         ;`
         return pool.query(photosQuery, [review_id, photos])
       })
-      .then(data => console.log(data.rows[0]))
+      .then(data => {
+        console.log(data.rows[0])
+        res.status(200).send(`Review added (review_id: ${review_id})`)
+      })
       .catch(err => console.error('error adding photos -->', err))
   },
 
