@@ -4,7 +4,8 @@
   "description": "reviews api that stores data in a postgres db",
   "main": "index.js",
   "scripts": {
-    "test": "npx nodemon --watch server server/app.js"
+    "start": "npx nodemon --watch server server/app.js",
+    "supertest": "npm run test/supertest.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
     "pg": "^8.7.3",
     "pg-copy-streams": "^6.0.2",
     "pgtools": "^0.3.2"
+  },
+  "devDependencies": {
+    "supertest": "^6.2.3"
   }
 }
