@@ -84,22 +84,22 @@ module.exports = {
   //   }
   // }
 
-  // getMeta: (req, res) => {
-  //   console.log(req.query);
-  //   let {product_id} = req.query;
+  getMeta: (req, res) => {
+    console.log(req.query);
+    let {product_id} = req.query;
 
-  //   let queryMeta = `
-  //     SELECT
-  //       $1 AS product_id,
-  //       () AS rating,
-  //       (SELECT
-  //         json_object_agg (
-  //           'false',
-  //         )
-  //       ) AS recommended,
-  //       () AS characteristics
-  //   `
-  // },
+    let queryMeta = `
+      SELECT
+        $1 AS product_id,
+        () AS rating,
+        (SELECT
+          json_object_agg (
+            'false',
+          )
+        ) AS recommended,
+        () AS characteristics
+    `
+  },
 
   addReview: (req, res) => {
     // console.log(req.body);
@@ -129,7 +129,7 @@ module.exports = {
         return pool.query(photosQuery, [review_id, photos])
       })
       .then(data => {
-        // console.log(data.rows[0])
+        console.log(data.rows[0])
         res.status(200).send(`Review added (review_id: ${review_id})`)
       })
       .catch(err => console.error('error adding photos -->', err))
