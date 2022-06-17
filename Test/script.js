@@ -7,6 +7,6 @@ export const options = {
 }
 
 export default function () {
-  let res = http.get('https://test.k6.io');
+  let res = http.get('http://localhost:3000/reviews/?product_id=40344');
   check(res, {'is status 200': (r) => r.status === 200});
 }
