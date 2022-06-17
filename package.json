@@ -4,7 +4,8 @@
   "description": "reviews api that stores data in a postgres db",
   "main": "index.js",
   "scripts": {
-    "test": "npx nodemon --watch server server/app.js"
+    "start": "npx nodemon --watch server server/app.js",
+    "supertest": "npm run test/supertest.js"
   },
   "repository": {
     "type": "git",
