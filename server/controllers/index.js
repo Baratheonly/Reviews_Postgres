@@ -120,7 +120,7 @@ module.exports = {
     pool.query(query, [...body.slice(0, body.length - 1), timeAdded])
       .then(data => {
         // console.log('hey, look at this review_id:', rev_id);
-        review_id = data.rows[0].review_id;
+        review_id = data.rows[0].review_id;;
         let photosQuery = `
           INSERT INTO photos(review_id, url)
           SELECT $1, UNNEST($2::text[])
