@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../db/app.js');
+const app = require('../server/app.js');
 
 describe("GET /reviews", () => {
   test("should respond with a status code of 200 and have an id", async () => {
