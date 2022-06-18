@@ -52,20 +52,63 @@ module.exports = {
   },
 
   getMeta: (req, res) => {
-    console.log(req.query);
     let {product_id} = req.query;
+    console.log(product_id);
 
-    let queryMeta = `
-      SELECT
-        $1 AS product_id,
-        () AS rating,
-        (SELECT
-          json_object_agg (
-            'false',
-          )
-        ) AS recommended,
-        () AS characteristics
+    const getRatingsCount = (rating) => {
+      return `SELECT COUNT(rating)
+              FROM reviews
+              WHERE product_id=$1 AND rating=${rating}`
+    }
+
+    const getRecommendCount = (bool) => {
+      return `SELECT COUNT(recommend)
+              FROM reviews
+              WHERE product_id=$1 AND recommend=${bool}`
+    }
+
+    const getValueCount = () => {
+      return `SELECT json_build_object(
+                'id', (),
+                'value', ()
+              ) FROM characteristic_reviews
+              WHERE `
+    }
+
+    let metaQuery = `
+      SELECT json_build_object(
+        'product_id', $1::integer,
+        'ratings', (SELECT json_build_object(
+          '1', (${getRatingsCount('$2')}),
+          '2', (${getRatingsCount('$3')}),
+          '3', (${getRatingsCount('$4')}),
+          '4', (${getRatingsCount('$5')}),
+          '5', (${getRatingsCount('$6')})
+        )),
+        'recommend', (SELECT json_build_object(
+          'false', (${getRecommendCount('$7')}),
+          'true', (${getRecommendCount('$8')})
+        )),
+        'characteristics", (SELECT json_build_object(
+          'Fit', (SELECT json_build_object(
+            'id', (),
+            'value', ()
+          )),
+          'Length', (SELECT json_build_object(
+
+          )),
+          'Comfort', (SELECT json_build_object(
+
+          )),
+          'Qualtiy', (SELECT json_build_object(
+
+          ))
+        ))
+      )
     `
+    pool.query(metaQuery, [product_id, 1, 2, 3, 4, 5, false, true])
+      .then(data => console.log(data.rows[0]))
+      .catch(err => console.error(err));
   },
 
   addReview: (req, res) => {
