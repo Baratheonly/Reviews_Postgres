@@ -53,7 +53,7 @@ module.exports = {
 
   getMeta: (req, res) => {
     let {product_id} = req.query;
-    console.log(product_id);
+    let char_id;
 
     const getRatingsCount = (rating) => {
       return `SELECT COUNT(rating)
@@ -67,47 +67,49 @@ module.exports = {
               WHERE product_id=$1 AND recommend=${bool}`
     }
 
-    const getValueCount = () => {
+    const getCharacteristicID = (ristic) => {
+      return `SELECT id
+              FROM characteristics c
+              WHERE product_id=$1 AND name=${ristic}`
+    }
+
+    const getValueCount = (ristic) => {
+      return `SELECT (SUM(value::decimal)/COUNT(value))
+              AS value
+              FROM characteristic_reviews
+              WHERE characteristic_id=(${getCharacteristicID(ristic)})`
+    }
+
+    const buildObject = (ristic) => {
       return `SELECT json_build_object(
-                'id', (),
-                'value', ()
-              ) FROM characteristic_reviews
-              WHERE `
+                'id', (${getCharacteristicID(ristic)}),
+                'value', (${getValueCount(ristic)})
+             )`
     }
 
     let metaQuery = `
-      SELECT json_build_object(
-        'product_id', $1::integer,
-        'ratings', (SELECT json_build_object(
+      SELECT
+        $1::integer AS product_id,
+        (SELECT json_build_object(
           '1', (${getRatingsCount('$2')}),
           '2', (${getRatingsCount('$3')}),
           '3', (${getRatingsCount('$4')}),
           '4', (${getRatingsCount('$5')}),
           '5', (${getRatingsCount('$6')})
-        )),
-        'recommend', (SELECT json_build_object(
+        )) AS ratings,
+        (SELECT json_build_object(
           'false', (${getRecommendCount('$7')}),
           'true', (${getRecommendCount('$8')})
-        )),
-        'characteristics", (SELECT json_build_object(
-          'Fit', (SELECT json_build_object(
-            'id', (),
-            'value', ()
-          )),
-          'Length', (SELECT json_build_object(
-
-          )),
-          'Comfort', (SELECT json_build_object(
-
-          )),
-          'Qualtiy', (SELECT json_build_object(
-
-          ))
-        ))
-      )
+        )) AS recommend,
+        (SELECT json_build_object(
+          $9::text, (${buildObject('$9')}),
+          $10::text, (${buildObject('$10')}),
+          $11::text, (${buildObject('$11')}),
+          $12::text, (${buildObject('$12')})
+        )) AS characteristics
     `
-    pool.query(metaQuery, [product_id, 1, 2, 3, 4, 5, false, true])
-      .then(data => console.log(data.rows[0]))
+    pool.query(metaQuery, [product_id, 1, 2, 3, 4, 5, false, true, 'Fit', 'Length', 'Comfort', 'Quality'])
+      .then(data => res.send(data.rows[0]))
       .catch(err => console.error(err));
   },
 
