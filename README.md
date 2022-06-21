@@ -4,7 +4,13 @@
    ☑ Throughput on single EC2 instance: 100 RPS    
    ☑ Latency Goal: < 2,000 ms under load   
    ☑ Error Rate Goal: < 1% under load  
-  
+
+| _Requirements_ | _Goal_ |
+| --- | --- |
+| Throughput on<br />single EC2 instance | <p align="center">100 RPS</p> |
+| Latency | <p align="center">< 2,000 ms under load</p> |
+   | Error Rate | <p align="center">< 1% under load</p> |
+
 ## Initial local test  
 K6 stress test queries are promising; already below 2000ms latency cap:  
 ![k6 testing](https://user-images.githubusercontent.com/100612152/174858916-a8b050ba-840e-48c7-9a0c-561dc0b7e41d.png)  
