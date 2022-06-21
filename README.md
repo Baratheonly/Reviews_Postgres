@@ -5,7 +5,8 @@ Latency Goal: < 2,000 ms under load
 Throughput on single EC2 instance: 100 RPS  
 Error Rate Goal: < 1% under load  
   
-Initial local test shows postgres queries to be promising already below 2000ms latency cap:  
+## Initial local test  
+Postgres queries are promising already below 2000ms latency cap:  
 ![k6 testing](https://user-images.githubusercontent.com/100612152/174858916-a8b050ba-840e-48c7-9a0c-561dc0b7e41d.png)  
   
 Improve efficiency:
@@ -13,7 +14,7 @@ Improve efficiency:
 - Refactored looping query for building an array of photos into a single query. Reduced stress on the database which was affecting response times.
 - Refactored insert into values (row constructor) for adding photos to the database, to insert into select (table constructor). Values required about 15-20 lines of code, and Select only required 3.
 
-After deploying EC2 instance, stress test using Loader.io  
+## Deploy EC2 instance and stress test using Loader.io   
 Initial test of 100 RPS looked promising with average response after initial spike between 2 - 3 ms and 0.0% error rate. Database is both consistent and fast. Next stress load will increase to 1,000 RPS:  
 ![Screen Shot 2022-06-17 at 11 56 53 AM](https://user-images.githubusercontent.com/100612152/174859429-c649672e-cf76-4ac6-9365-f38ff539b401.png)  
   
@@ -26,3 +27,5 @@ Final test of 3,000 RPS to determine when scaling would be necessary. With this 
 
 
 1,625 ms response times do not give a great user experience. Recommend scaling horizontally to increase throughput capabilities.
+  
+  
