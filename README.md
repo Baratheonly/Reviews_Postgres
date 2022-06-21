@@ -10,7 +10,7 @@ Initial local test shows postgres queries to be promising already below 2000ms l
   
 Improve efficiency:
 - Add indexes and set access method to "hash".
-- Refactored looping get query for building an array of photos into a single query. Reduced stress on the database which was affecting response times.
+- Refactored looping query for building an array of photos into a single query. Reduced stress on the database which was affecting response times.
 - Refactored insert into values (row constructor) for adding photos to the database, to insert into select (table constructor). Values required about 15-20 lines of code, and Select only required 3.
 
 After deploying EC2 instance, stress test using Loader.io  
