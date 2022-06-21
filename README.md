@@ -1,9 +1,9 @@
 # Reviews_Postgres
 
-System Design Requirements:  
-- Throughput on single EC2 instance: 100 RPS 
-- Latency Goal: < 2,000 ms under load   
-- Error Rate Goal: < 1% under load  
+### System Design Requirements:  
+   ☑ Throughput on single EC2 instance: 100 RPS    
+   ☑ Latency Goal: < 2,000 ms under load   
+   ☑ Error Rate Goal: < 1% under load  
   
 ## Initial local test  
 K6 stress test queries are promising; already below 2000ms latency cap:  
@@ -12,7 +12,7 @@ K6 stress test queries are promising; already below 2000ms latency cap:
 ### Improve efficiency:
 - Add indexes and set access method to "hash".
 - Refactored looping query for building an array of photos into a single query. Reduced stress on the database which was affecting response times.
-- Refactored insert into values (row constructor) for adding photos to the database, to insert into select (table constructor). Values required about 15-20 lines of code, and Select only required 3.
+- Refactored insert into values (row constructor) for adding photos to the database, to insert into select (table constructor). Insert Into Values required about 15-20 lines of code, and Insert Into Select only required 3.
 
 ## Deploy EC2 instance and stress test using Loader.io   
 Initial test of 100 RPS looked promising with average response after initial spike between 2 - 3 ms and 0.0% error rate. Database is both consistent and fast. Next stress load will increase to 1,000 RPS:  
