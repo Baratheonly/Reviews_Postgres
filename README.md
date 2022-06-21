@@ -22,7 +22,7 @@ Stress test of 1,000 RPS also looks fantastic with an average response after the
 Database continues to be consistent and fast despite the significantly higher sress load and surpasses the goals for the System Requirements.  
 ![Screen Shot 2022-06-17 at 12 00 22 PM](https://user-images.githubusercontent.com/100612152/174860406-d08924f4-1de8-4b35-b490-8eb11dfbd2f0.png)  
   
-Final test of 3,000 RPS to determine when scaling would be necessary. With this amount of stress load, response times are still below the 2,000 ms latency threshold, with the average response time of 1,625 ms and continues to be consistent with an incredible 0.0% error rate. So despite the slower response times, users will still get the data they're looking for.  
+Final test of 3,000 RPS to determine when scaling would be necessary. With this amount of stress load, response times are still below the 2,000 ms latency threshold, with the average response time of 1,625 ms and continues to be consistent with an incredible 0.0% error rate. Despite the slower response times, users will still get the data they're looking for.  
 ![Screen Shot 2022-06-17 at 12 03 47 PM](https://user-images.githubusercontent.com/100612152/174861676-198f03e1-6a63-4c4a-bf75-f3d0f157c49c.png)
 
 
